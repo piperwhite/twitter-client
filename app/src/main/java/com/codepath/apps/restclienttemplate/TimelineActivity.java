@@ -23,6 +23,7 @@ public class TimelineActivity extends AppCompatActivity {
     TweetAdapter tweetAdapter;
     ArrayList<Tweet> tweets;
     RecyclerView rvTweets;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +38,34 @@ public class TimelineActivity extends AppCompatActivity {
         // construct the adapter from this datasource
         tweetAdapter = new TweetAdapter(tweets);
         // RecyclerView setup (layout manager, user adapter)
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(this);
+        rvTweets.setLayoutManager(linearLayoutManager);
         //set the adapter
         rvTweets.setAdapter(tweetAdapter);
-        populateTimeline();
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                loadNextDataFromApi();
+            }
+        };
+        rvTweets.addOnScrollListener(scrollListener);
+        populateTimeline(Long.MAX_VALUE-1);
     }
 
-    private void populateTimeline() {
+    // Append the next page of data into the adapter
+    private void loadNextDataFromApi() {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyDataSetChanged()`
+
+        populateTimeline(tweets.get(tweets.size()-1).uid);
+    }
+
+    private void populateTimeline(long lastID) {
+        Log.d("populate", "id: "+ lastID);
         client.getHomeTimeline(new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -87,6 +109,6 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.d("TwitterClient", errorResponse.toString());
                 throwable.printStackTrace();
             }
-        });
+        }, lastID);
     }
 }
