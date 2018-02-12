@@ -94,10 +94,10 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
             super(itemView);
 
             //perform findViewById lookups
-            ivProfileImage = (ImageView) itemView.findViewById(R.id.ivProfileImage);
-            tvUsername = (TextView) itemView.findViewById(R.id.tvUserName);
+            ivProfileImage = (ImageView) itemView.findViewById(R.id.iv_profile_image);
+            tvUsername = (TextView) itemView.findViewById(R.id.tv_user_name);
             tvBody = (TextView) itemView.findViewById(R.id.tvBody);
-            tvTimestamp = (TextView) itemView.findViewById(R.id.tvTimestamp);
+            tvTimestamp = (TextView) itemView.findViewById(R.id.tv_timestamp);
 
         }
     }

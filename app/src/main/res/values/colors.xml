@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="twitter_color">#1dcaff</color>
+    <color name="disable_color">#83d9f4</color>
+    <color name="negative_count_color">#f40c04</color>
+</resources>
