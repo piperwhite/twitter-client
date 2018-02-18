@@ -28,7 +28,9 @@
         android:layout_below="@+id/tv_user_name"
         android:layout_marginLeft="5dp"
         android:layout_toEndOf="@+id/iv_profile_image"
-        android:text="TextView" />
+        android:text="TextView"
+        android:autoLink="all"
+        android:linksClickable="true"/>
 
     <TextView
         android:id="@+id/tv_timestamp"
