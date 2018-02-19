@@ -1,18 +1,34 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import com.codepath.apps.restclienttemplate.MyDatabase;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Created by BLANCA on 04/02/2018.
  */
-
-public class Tweet {
+@Table(database = MyDatabase.class)
+public class Tweet extends BaseModel {
 
     //List out the attributes
+    @Column
     public String body;
+
+    @Column
+    @PrimaryKey
     public long uid;// database ID for the tweet
+
+    @Column
+    @ForeignKey(saveForeignKeyModel = true)
     public User user;
+
+    @Column
     public String createAt;
 
     //deserialize the JSON

@@ -1,18 +1,30 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import com.codepath.apps.restclienttemplate.MyDatabase;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Created by BLANCA on 04/02/2018.
  */
-
-public class User {
+@Table(database = MyDatabase.class)
+public class User extends BaseModel {
 
     //list the attributes
+    @Column
     public String name;
+
+    @Column
+    @PrimaryKey
     public long uid;
+    @Column
     public String screenName;
+    @Column
     public String profileImageUrl;
 
     //deserialize the JSON

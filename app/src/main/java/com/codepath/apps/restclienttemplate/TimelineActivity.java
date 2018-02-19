@@ -1,5 +1,8 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
@@ -11,9 +14,11 @@ import android.util.Log;
 import android.view.View;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.Tweet_Table;
 import com.codepath.apps.restclienttemplate.models.User;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +59,12 @@ public class TimelineActivity extends AppCompatActivity {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                fetchTimelineAsync(Long.MAX_VALUE-1);
+                if(isConnectedToNetwork()){
+                    fetchTimelineAsync(Long.MAX_VALUE-1);
+                }else{
+                    swipeContainer.setRefreshing(false);
+                }
+
             }
         });
         // Configure the refreshing colors
@@ -89,8 +99,26 @@ public class TimelineActivity extends AppCompatActivity {
             }
         };
         rvTweets.addOnScrollListener(scrollListener);
-        getUserData();
-        populateTimeline(Long.MAX_VALUE-1);
+        if(isConnectedToNetwork()){
+            getUserData();
+            populateTimeline(Long.MAX_VALUE-1);
+        }else{
+            populateTimelineFromLocalDB();
+        }
+
+    }
+
+    private void populateTimelineFromLocalDB() {
+        tweets.addAll(SQLite.select().
+                from(Tweet.class).orderBy(Tweet_Table.uid, false).
+                queryList());
+        tweetAdapter.notifyDataSetChanged();
+    }
+
+    private boolean isConnectedToNetwork() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     public void fetchTimelineAsync(long lastID) {
@@ -131,6 +159,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     userData = User.fromJson(response);
+                    userData.save();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -165,6 +194,7 @@ public class TimelineActivity extends AppCompatActivity {
                         Date now = new Date();
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(twitterFormat);
                         newTweet.createAt= simpleDateFormat.format(now);
+                        newTweet.save();
                         tweets.add(0, newTweet);
                         tweetAdapter.notifyItemInserted(0);
                         rvTweets.scrollToPosition(0);
@@ -236,6 +266,7 @@ public class TimelineActivity extends AppCompatActivity {
             // notify the adapter that we've added an item
             try{
                 Tweet tweet = Tweet.fromJSON(response.getJSONObject(i));
+                tweet.save();
                 tweets.add(tweet);
                 tweetAdapter.notifyItemInserted(tweets.size() - 1);
             }catch (JSONException e){
