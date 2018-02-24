@@ -1,6 +1,7 @@
-package com.codepath.apps.restclienttemplate;
+package com.blanca.apps.twitterclient;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -13,9 +14,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.codepath.apps.restclienttemplate.models.Tweet;
-import com.codepath.apps.restclienttemplate.models.Tweet_Table;
-import com.codepath.apps.restclienttemplate.models.User;
+import com.blanca.apps.twitterclient.models.Tweet;
+import com.blanca.apps.twitterclient.models.Tweet_Table;
+import com.blanca.apps.twitterclient.models.User;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -99,6 +100,14 @@ public class TimelineActivity extends AppCompatActivity {
             }
         };
         rvTweets.addOnScrollListener(scrollListener);
+        tweetAdapter.setOnTweetClickListener(new TweetAdapter.OnTweetClickListener() {
+            @Override
+            public void onTweetClick(Tweet tweet) {
+                Intent intent = new Intent(TimelineActivity.this, DetailedTweetActivity.class);
+                intent.putExtra("tweet", tweet);
+                startActivity(intent);
+            }
+        });
         if(isConnectedToNetwork()){
             getUserData();
             populateTimeline(Long.MAX_VALUE-1);

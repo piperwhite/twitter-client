@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate;
+package com.blanca.apps.twitterclient;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.blanca.apps.twitterclient.models.Tweet;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +25,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
     private List<Tweet> mTweets;
     private Context context;
+    private OnTweetClickListener listener;
 
     //pass in the Tweets array in the constructor
     public TweetAdapter(List<Tweet> tweets){
@@ -56,7 +57,33 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
         holder.tvBody.setText(tweet.body);
         Glide.with(context).load(tweet.user.profileImageUrl).into(holder.ivProfileImage);
         holder.tvTimestamp.setText(getRelativeTimeAgo(tweet.createAt));
+
+        holder.itemView.setOnClickListener(new TweetClickedListener(tweet));
+        holder.tvBody.setOnClickListener(new TweetClickedListener(tweet));
     }
+
+    public void setOnTweetClickListener(OnTweetClickListener listener) {
+        this.listener= listener;
+    }
+
+    public interface OnTweetClickListener{
+        void onTweetClick(Tweet tweet);
+    }
+
+    public class TweetClickedListener implements View.OnClickListener{
+
+        Tweet tweet;
+
+        public TweetClickedListener(Tweet tweet){
+            this.tweet= tweet;
+        }
+
+        @Override
+        public void onClick(View view) {
+            listener.onTweetClick(tweet);
+        }
+    }
+
 
     @Override
     public int getItemCount() {
@@ -84,6 +111,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
         return relativeDate;
     }
 
+
+
     // create ViewHolder class
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView ivProfileImage;
@@ -97,7 +126,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
             //perform findViewById lookups
             ivProfileImage = (ImageView) itemView.findViewById(R.id.iv_profile_image);
             tvUsername = (TextView) itemView.findViewById(R.id.tv_user_name);
-            tvBody = (TextView) itemView.findViewById(R.id.tvBody);
+            tvBody = (TextView) itemView.findViewById(R.id.tv_body);
             tvTimestamp = (TextView) itemView.findViewById(R.id.tv_timestamp);
 
         }

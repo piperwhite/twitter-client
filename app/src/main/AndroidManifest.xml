@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.codepath.apps.restclienttemplate"
+    package="com.blanca.apps.twitterclient"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -9,13 +9,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".TwitterApp"
+        android:name="com.blanca.apps.twitterclient.TwitterApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoginActivity"
+            android:name="com.blanca.apps.twitterclient.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -34,7 +34,16 @@
                     android:scheme="@string/intent_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".TimelineActivity"></activity>
+        <activity android:name="com.blanca.apps.twitterclient.TimelineActivity" />
+        <activity android:name="com.blanca.apps.twitterclient.DetailedTweetActivity"
+            android:label="@string/title_tweet"
+            android:parentActivityName="com.blanca.apps.twitterclient.TimelineActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.blanca.apps.twitterclient.TimelineActivity" />
+        </activity>
     </application>
 
 </manifest>

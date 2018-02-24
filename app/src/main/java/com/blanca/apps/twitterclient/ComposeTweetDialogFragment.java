@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate;
+package com.blanca.apps.twitterclient;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate;
+package com.blanca.apps.twitterclient;
 
 import android.content.Intent;
 import android.os.Bundle;
